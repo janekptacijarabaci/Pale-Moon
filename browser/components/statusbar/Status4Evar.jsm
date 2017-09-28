@@ -195,7 +195,8 @@ S4EWindowGetters.prototype =
 			["statusWidgetLabel",      "status4evar-status-text"],
 			["strings",                "bundle_status4evar"],
 			["throbberProgress",       "status4evar-throbber-widget"],
-			["toolbarProgress",        "status4evar-progress-bar"]
+			["toolbarProgress",        "status4evar-progress-bar"],
+			["urlbarProgress",         "urlbar-progress-alt"]
 		],
 
 	resetGetters: function()
@@ -212,6 +213,27 @@ S4EWindowGetters.prototype =
 				return this[prop] = document.getElementById(id);
 			});
 		}, this);
+
+		delete this.urlbar;
+		this.__defineGetter__("urlbar", function()
+		{
+			let ub = document.getElementById("urlbar");
+			if(!ub)
+			{
+				return null;
+			}
+
+			["setStatus", "setStatusType", "updateOverLinkLayout"].forEach(function(func)
+			{
+				if(!(func in ub))
+				{
+					ub[func] = function() {};
+				}
+			});
+
+			delete this.urlbar;
+			return this.urlbar = ub;
+		});
 
 		delete this.statusOverlay;
 		this.__defineGetter__("statusOverlay", function()
@@ -235,7 +257,7 @@ S4EWindowGetters.prototype =
 			delete this[prop];
 		}, this);
 
-		["statusOverlay", "statusOverlay", "_window"].forEach(function(prop)
+		["urlbar", "statusOverlay", "statusOverlay", "_window"].forEach(function(prop)
 		{
 			delete this[prop];
 		}, this);
